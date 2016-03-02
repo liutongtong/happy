@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HAPPY</title>
+	<style type="text/css">
+html, body{
+	background: #eee;
+}
+
+h2 {
+	font-size: 1em;
+}
+
+	</style>
+</head>
+<body>
+<h2>Click me if you are happy</h2>
+<img id='happy' src="./img/happy.png">
+<img id='sad' src="./img/sad.png">
+<script type="text/javascript">
+!function () {
+	/**
+	 * type
+	 */
+	function submit(type) {
+		// openid
+
+		// date
+
+		// loction
+		var location = ''
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(function(pos) {
+				location = pos.coords.latitude + '|' + pos.coords.longitude
+			})
+		}
+
+		var date = +new Date()
+
+		var submitData = JSON.stringify({
+			date: date,
+			openid: date,
+			like: type,
+			loction: location
+		})
+
+		xhr('./submit?data=' + encodeURIComponent(submitData))
+		console.log(type)
+	}
+
+	function xhr (url, opts) {
+	  opts = opts || {}
+	  var method = opts.method ? opts.method.toUpperCase() : 'GET'
+	  var request = new window.XMLHttpRequest()
+	  request.open(method, url, true)
+	  if (method === 'POST') request.setRequestHeader('Content-Type', 'application/json; charset=utf-8')
+	  request.onload = function () {
+	    if (request.status >= 200 && request.status < 400) {
+	      opts.onSuccess && opts.onSuccess(JSON.parse(request.responseText))
+	    } else {
+	      opts.onError && opts.onError()
+	    }
+	  }
+	  request.onerror = function (err) {
+	    opts.onError && opts.onError(err)
+	  }
+	  request.send(opts.data)
+	}
+
+	document.getElementById('happy').onclick = function (e) {
+		submit(1)
+	}
+
+	document.getElementById('sad').onclick = function (e) {
+		submit(0)
+	}
+}()
+</script>
+</body>
+</html>
